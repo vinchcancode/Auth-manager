@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { auth, db } from "./firebaseConfig"; // Ensure you import `auth` and `db` correctly
-import { collection, addDoc, getDocs, deleteDoc, doc } from "firebase/firestore"; // Firestore functions
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+} from "firebase/firestore"; // Firestore functions
 
 const Dashboard = () => {
   const [newCodes, setNewCodes] = useState(""); // Input for all codes
@@ -13,8 +19,8 @@ const Dashboard = () => {
     // Clean the codes by removing the digits and the dot (e.g., 1.3VF6VF8 becomes 3VF6VF8)
     const cleanedCodes = newCodes
       .split(/\s+/) // Split the input by spaces (or new lines)
-      .map(code => code.replace(/\d+\./g, "")) // Remove digits and dot before each code
-      .filter(code => code.length === 7); // Ensure that only 7-character codes are added
+      .map((code) => code.replace(/\d+\./g, "")) // Remove digits and dot before each code
+      .filter((code) => code.length === 7); // Ensure that only 7-character codes are added
 
     // Save the cleaned codes to Firestore
     const user = auth.currentUser;
@@ -23,9 +29,7 @@ const Dashboard = () => {
         const userCodesRef = collection(db, "users", user.uid, "codes");
         // Add each cleaned code to Firestore
         await Promise.all(
-          cleanedCodes.map((code) =>
-            addDoc(userCodesRef, { code: code })
-          )
+          cleanedCodes.map((code) => addDoc(userCodesRef, { code: code }))
         );
         setCodes((prevCodes) => [
           ...prevCodes,
@@ -87,7 +91,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <h2>Dashboard</h2>
+      <h2>TEST DASHBOARD</h2>
       <button onClick={handleLogout}>Logout</button>
       <div>
         <textarea
@@ -103,12 +107,25 @@ const Dashboard = () => {
       <div>
         {codes.length > 0 ? (
           codes.map((codeObj) => (
-            <div key={codeObj.id} style={{ marginBottom: "10px", padding: "5px", border: "1px solid #ccc" }}>
+            <div
+              key={codeObj.id}
+              style={{
+                marginBottom: "10px",
+                padding: "5px",
+                border: "1px solid #ccc",
+              }}
+            >
               <span>{codeObj.code}</span>
-              <button onClick={() => handleCopyCode(codeObj.code)} style={{ marginLeft: "10px" }}>
+              <button
+                onClick={() => handleCopyCode(codeObj.code)}
+                style={{ marginLeft: "10px" }}
+              >
                 Copy
               </button>
-              <button onClick={() => handleDeleteCode(codeObj.id)} style={{ marginLeft: "10px" }}>
+              <button
+                onClick={() => handleDeleteCode(codeObj.id)}
+                style={{ marginLeft: "10px" }}
+              >
                 Delete
               </button>
             </div>
